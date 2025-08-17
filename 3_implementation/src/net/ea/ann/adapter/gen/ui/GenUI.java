@@ -70,7 +70,7 @@ import net.ea.ann.adapter.gen.beans.GAN;
 import net.ea.ann.adapter.gen.beans.VAE;
 import net.ea.ann.adapter.ui.ImagePathListExt;
 import net.ea.ann.classifier.Classifier;
-import net.ea.ann.classifier.ClassifierImpl;
+import net.ea.ann.classifier.StackClassifier;
 import net.ea.ann.conv.Content;
 import net.ea.ann.conv.ContentAssoc;
 import net.ea.ann.core.NetworkAbstract;
@@ -2999,7 +2999,7 @@ public class GenUI extends JFrame implements Inspector, SetupAlgListener {
 			if (gm == null) return (classifier = null);
 			try {
 				boolean isNorm = gm.queryConfig().getAsBoolean(Raster.NORM_FIELD);
-				return classifier != null ? classifier : ClassifierImpl.create(gm.getRasterChannel(), isNorm);
+				return classifier != null ? classifier : StackClassifier.create(gm.getRasterChannel(), isNorm);
 			} catch (Throwable e) {Util.trace(e);}
 			return (classifier = null);
 		}

@@ -351,6 +351,15 @@ public class MatrixNetworkImpl extends MatrixNetworkAbstract implements MatrixLa
 	
 	
 	/**
+	 * Getting trainer.
+	 * @return the first trainer.
+	 */
+	public TaskTrainer getTrainer() {
+		return trainers.size() > 0 ? trainers.get(0) : null;
+	}
+	
+	
+	/**
 	 * Adding trainer.
 	 * @param trainer specified trainer.
 	 * @return adding is successful.

@@ -24,20 +24,19 @@ public interface LikelihoodGradient {
 	/**
 	 * Calculating the optimal derivative given computed output and real output.
 	 * @param output computed or predicted output.
-	 * @param realOutput real output from environment.
-	 * @param params optional parameters.
+	 * @param realOutput real output from environment. It can be null.
 	 * @return optimal derivative.
 	 */
-	Matrix gradient(Matrix output, Matrix realOutput, Object...params);
+	Matrix gradient(Matrix output, Matrix realOutput);
 
 	
 	/**
 	 * Calculating error of computed output and environmental output, which is often the negative of likelood.
-	 * @param output computed or predicted output.
-	 * @param realOutput real output from environment.
+	 * @param output computed or predicted output. It cannot be null.
+	 * @param realOutput real output from environment. It cannot be null.
 	 * @return the last bias.
 	 */
-	static Matrix error(Matrix output, Matrix realOutput, Object...params) {
+	static Matrix error(Matrix output, Matrix realOutput) {
 		return realOutput.subtract(output);
 	}
 	
@@ -48,7 +47,7 @@ public interface LikelihoodGradient {
 	 * @param realOutputProb real probabilistic distribution from environment.
 	 * @return the last bias.
 	 */
-	static Matrix lossEntropyGradientByRow(Matrix output, Matrix realOutputProb, Object...params) {
+	static Matrix lossEntropyGradientByRow(Matrix output, Matrix realOutputProb) {
 		//Normalizing real probabilities.
 		for (int row = 0; row < realOutputProb.rows(); row++) {
 			NeuronValue sum = realOutputProb.get(0, 0).zero();
@@ -92,7 +91,7 @@ public interface LikelihoodGradient {
 	 * @param realOutputProb real probabilistic distribution from environment.
 	 * @return the last bias.
 	 */
-	static Matrix lossEntropyGradientByColumn(Matrix output, Matrix realOutputProb, Object...params) {
+	static Matrix lossEntropyGradientByColumn(Matrix output, Matrix realOutputProb) {
 		//Normalizing real probabilities.
 		for (int column = 0; column < realOutputProb.columns(); column++) {
 			NeuronValue sum = realOutputProb.get(0, 0).zero();

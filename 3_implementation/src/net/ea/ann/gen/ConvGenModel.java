@@ -128,7 +128,8 @@ public interface ConvGenModel extends GenModel {
 
 
 	/**
-	 * Reproducing raster.
+	 * Reproducing raster, which is similar to method {@link #recoverRaster(Raster, Cube, boolean, boolean)} except that
+	 * reproducing method firstly learns from the raster itself that will be reproduced.
 	 * @param raster original raster.
 	 * @param region specified region. If it is null, entire raster will be reproduced.
 	 * @param random flag to indicate whether or not to random generation.

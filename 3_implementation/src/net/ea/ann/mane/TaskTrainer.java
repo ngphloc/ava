@@ -7,8 +7,6 @@
  */
 package net.ea.ann.mane;
 
-import java.io.Serializable;
-
 import net.ea.ann.core.value.Matrix;
 
 /**
@@ -19,7 +17,7 @@ import net.ea.ann.core.value.Matrix;
  *
  */
 @FunctionalInterface
-public interface TaskTrainer extends Serializable, Cloneable {
+public interface TaskTrainer {
 
 
 	/**

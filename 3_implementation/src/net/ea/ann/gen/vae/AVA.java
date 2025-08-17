@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.ea.ann.conv.filter.Filter;
+import net.ea.ann.conv.stack.StackNetworkInitializer;
 import net.ea.ann.core.Id;
 import net.ea.ann.core.LayerStandard;
 import net.ea.ann.core.NetworkDoEvent.Type;
@@ -186,7 +187,7 @@ public class AVA extends ConvVAEImpl {
 			conv = createConvNetwork();
 			if (conv == null)
 				return false;
-			else if (!conv.initialize(new Size(width, height, depth, time), convFilters))
+			else if (!new StackNetworkInitializer(conv).initialize(new Size(width, height, depth, time), convFilters))
 				return false;
 			
 			try {
@@ -212,7 +213,7 @@ public class AVA extends ConvVAEImpl {
 			deconv = createDeconvNetwork();
 			if (deconv == null)
 				return false;
-			else if (!deconv.initialize(deconvSize, deconvFilters))
+			else if (!new StackNetworkInitializer(deconv).initialize(deconvSize, deconvFilters))
 				return false;
 		}
 		

@@ -261,7 +261,7 @@ public class Attention implements Cloneable, Serializable {
 	 * @param inputY Y input data.
 	 * @param inputX X input data.
 	 */
-	public void setInputs(Matrix inputY, Matrix inputX) {
+	public void enterInputs(Matrix inputY, Matrix inputX) {
 		if (Y() != null && inputY != null) Matrix.copy(inputY, Y());
 		if (X() != null && inputX != null) Matrix.copy(inputX, X());
 	}
@@ -275,7 +275,7 @@ public class Attention implements Cloneable, Serializable {
 	 */
 	public Matrix evaluate(Matrix inputY, Matrix inputX) {
 		if (!validate()) return null;
-		setInputs(inputY, inputX);
+		enterInputs(inputY, inputX);
 		
 		Matrix[] aList = new Matrix[heads.length];
 		for (int i = 0; i < heads.length; i++) aList[i] = heads[i].evaluate();
@@ -325,7 +325,7 @@ public class Attention implements Cloneable, Serializable {
 		for (int i = 0; i < heads.length; i++) {
 			Attention0 head = heads[i];
 			int n = head.A.columns();
-			Matrix ERRORi = ERROR.extractVertical(index, n);
+			Matrix ERRORi = ERROR.getColumns(index, n);
 			head.learn(ERRORi, learningRate);
 			index += n;
 		}
@@ -829,7 +829,7 @@ class Attention0 implements Cloneable, Serializable {
 	 * @param inputY Y input data.
 	 * @param inputX X input data.
 	 */
-	public void setInputs(Matrix inputY, Matrix inputX) {
+	public void enterInputs(Matrix inputY, Matrix inputX) {
 		Matrix.copy(inputY, Y);
 		if (X != null && inputX != null) Matrix.copy(inputX, X);
 	}

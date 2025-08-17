@@ -17,6 +17,7 @@ import net.ea.ann.conv.Content;
 import net.ea.ann.conv.filter.Filter;
 import net.ea.ann.conv.filter.FilterAssoc;
 import net.ea.ann.conv.stack.StackNetworkImpl;
+import net.ea.ann.conv.stack.StackNetworkInitializer;
 import net.ea.ann.core.Id;
 import net.ea.ann.core.LayerStandard;
 import net.ea.ann.core.NetworkAbstract;
@@ -38,13 +39,13 @@ import net.ea.ann.raster.Size;
 import net.ea.ann.raster.SizeZoom;
 
 /**
- * This class is default implementation of classifier.
+ * This class is default implementation of classifier within context of stack network.
  * 
  * @author Loc Nguyen
  * @version 1.0
  *
  */
-public class ClassifierImpl extends StackNetworkImpl implements Classifier {
+public class StackClassifier extends StackNetworkImpl implements Classifier {
 
 	
 	/**
@@ -163,7 +164,7 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 	 * @param contentActivateRef activation function of content, which is often activation function relate to convolutional pixel like ReLU function.
 	 * @param idRef ID reference.
 	 */
-	protected ClassifierImpl(int neuronChannel, Function activateRef, Function contentActivateRef, Id idRef) {
+	protected StackClassifier(int neuronChannel, Function activateRef, Function contentActivateRef, Id idRef) {
 		super(neuronChannel, activateRef, contentActivateRef, idRef);
 //		this.fullNetworkNeuronChannel = FULL_NETWORK_NEURON_CHANNEL_DEFAULT;
 		
@@ -183,7 +184,7 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 	 * @param activateRef activation function, which is often activation function related to weights like sigmod function.
 	 * @param contentActivateRef activation function of content, which is often activation function relate to convolutional pixel like ReLU function.
 	 */
-	protected ClassifierImpl(int neuronChannel, Function activateRef, Function contentActivateRef) {
+	protected StackClassifier(int neuronChannel, Function activateRef, Function contentActivateRef) {
 		this(neuronChannel, activateRef, contentActivateRef, null);
 	}
 
@@ -326,6 +327,31 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 
 
 	/**
+	 * Getting class index of label.
+	 * @param label specified label.
+	 * @return class index of label.
+	 */
+	private int classOf(int label) {
+		Set<Integer> classIndices = classMap.keySet();
+		for (int classIndex : classIndices) {
+			Label labelObject = classMap.get(classIndex);
+			if (labelObject.labelId == label) return classIndex;
+		}
+		return -1;
+	}
+	
+	
+	/**
+	 * Getting label of class index.
+	 * @param classIndex class index.
+	 * @return label of class index.
+	 */
+	private Label labelOf(int classIndex) {
+		return classMap.containsKey(classIndex) ? classMap.get(classIndex) : null;
+	}
+
+
+	/**
 	 * Pre-processing for learning.
 	 * @param sample
 	 * @return new sample.
@@ -360,7 +386,7 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 
 		Size size = RasterAssoc.getAverageSize(train);
 		Filter[][] filterArrays = getFilterArrays(size, getDim(train));
-		if (!initialize(size, filterArrays)) {
+		if (!new StackNetworkInitializer(this).initialize(size, filterArrays)) {
 			reset();
 			return Util.newList(0);
 		}
@@ -415,31 +441,6 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 			results.add(rw);
 		}
 		return results;
-	}
-
-
-	/**
-	 * Getting class number of label.
-	 * @param label specified label.
-	 * @return class number of label.
-	 */
-	private int classOf(int label) {
-		Set<Integer> classNumbers = classMap.keySet();
-		for (int classNumber : classNumbers) {
-			Label labelObject = classMap.get(classNumber);
-			if (labelObject.labelId == label) return classNumber;
-		}
-		return -1;
-	}
-	
-	
-	/**
-	 * Getting label of class number.
-	 * @param classNumber class number.
-	 * @return label of class number.
-	 */
-	private Label labelOf(int classNumber) {
-		return classMap.containsKey(classNumber) ? classMap.get(classNumber) : null;
 	}
 
 
@@ -540,8 +541,8 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 	 * @param idRef ID reference.
 	 * @return classifier.
 	 */
-	public static ClassifierImpl create(int neuronChannel, Function activateRef, Function contentActivateRef, Id idRef) {
-		return new ClassifierImpl(neuronChannel, activateRef, contentActivateRef, idRef);
+	public static StackClassifier create(int neuronChannel, Function activateRef, Function contentActivateRef, Id idRef) {
+		return new StackClassifier(neuronChannel, activateRef, contentActivateRef, idRef);
 	}
 
 
@@ -552,7 +553,7 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 	 * @param contentActivateRef activation function of content, which is often activation function relate to convolutional pixel like ReLU function.
 	 * @return classifier.
 	 */
-	public static ClassifierImpl create(int neuronChannel, Function activateRef, Function contentActivateRef) {
+	public static StackClassifier create(int neuronChannel, Function activateRef, Function contentActivateRef) {
 		return create(neuronChannel, activateRef, contentActivateRef, null);
 	}
 
@@ -563,7 +564,7 @@ public class ClassifierImpl extends StackNetworkImpl implements Classifier {
 	 * @param isNorm norm flag.
 	 * @return classifier.
 	 */
-	public static ClassifierImpl create(int neuronChannel, boolean isNorm) {
+	public static StackClassifier create(int neuronChannel, boolean isNorm) {
 		Function activateRef = Raster.toActivationRef(neuronChannel, isNorm);
 		Function contentActivateRef = Raster.toConvActivationRef(neuronChannel, isNorm);
 		return create(neuronChannel, activateRef, contentActivateRef, null);
